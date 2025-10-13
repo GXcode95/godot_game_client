@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="JobData" load_steps=3 format=3 uid="uid://b5etub1ljkuc1"]
+
+[ext_resource type="Script" uid="uid://pqomod2xytq6" path="res://Scripts/Resources/job_data.gd" id="1_n815c"]
+[ext_resource type="PackedScene" uid="uid://e2pab1wugf2j" path="res://Scenes/red_fox.tscn" id="2_d7uiw"]
+
+[resource]
+script = ExtResource("1_n815c")
+job_name = "Red Fox"
+max_hp = 100
+move_range = 5
+sprite_scene = ExtResource("2_d7uiw")
+attack_range = 1
+attack_damage = 50
+action_points = 5
+attack_cost = 5
+metadata/_custom_type_script = "uid://pqomod2xytq6"

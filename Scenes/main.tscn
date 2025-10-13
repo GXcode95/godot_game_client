@@ -1,0 +1,287 @@
+[gd_scene load_steps=44 format=4 uid="uid://bxjspybkwkudm"]
+
+[ext_resource type="Script" uid="uid://cgkiqkwhju3f0" path="res://Scripts/board.gd" id="1_7mycd"]
+[ext_resource type="TileSet" uid="uid://c7rwrxn1s56mq" path="res://Resources/tileSet1.tres" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://b37ihxj2he8fg" path="res://Scripts/game.gd" id="2_272bh"]
+[ext_resource type="Resource" uid="uid://b5etub1ljkuc1" path="res://Resources/red_fox.tres" id="3_fevyy"]
+[ext_resource type="Texture2D" uid="uid://c3cc6lxlikob5" path="res://Assets/Highlight/blue_cell.png" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://da87i0yc1lhby" path="res://Scripts/camera_2d.gd" id="4_1bvp3"]
+[ext_resource type="Resource" uid="uid://da6hxcjrv2u8s" path="res://Resources/orange_fox.tres" id="4_hibaj"]
+[ext_resource type="Texture2D" uid="uid://bcdojm7lgv8df" path="res://Assets/Highlight/green_cell.png" id="5_wsu2k"]
+[ext_resource type="Texture2D" uid="uid://dej8oc6fgxi34" path="res://Assets/Highlight/red_cell.png" id="6_7mycd"]
+[ext_resource type="Texture2D" uid="uid://bq1y2u0nusded" path="res://Assets/Highlight/green_outline.png" id="7_k12tt"]
+[ext_resource type="Texture2D" uid="uid://ca3vah66cqmpj" path="res://Assets/Highlight/red_outline.png" id="8_h1bgf"]
+[ext_resource type="Texture2D" uid="uid://bjegepqcv2wqx" path="res://Assets/Highlight/blue_outline.png" id="9_b3802"]
+[ext_resource type="Texture2D" uid="uid://cb1fo8tspc32l" path="res://Assets/Highlight/purple_outline.png" id="10_fevyy"]
+[ext_resource type="Texture2D" uid="uid://ck85tv34737p5" path="res://Assets/Highlight/yellow_outline.png" id="10_k12tt"]
+[ext_resource type="Texture2D" uid="uid://cmhs3xejsayrk" path="res://Assets/Highlight/orange_outline.png" id="11_hibaj"]
+[ext_resource type="Texture2D" uid="uid://dg7k35xsebxge" path="res://Assets/Highlight/yellow_cell.png" id="13_pdsj5"]
+[ext_resource type="Texture2D" uid="uid://b76j3j0munxiu" path="res://Assets/Highlight/purple_cell.png" id="14_ee4r6"]
+[ext_resource type="Texture2D" uid="uid://c88r6ihqlb1gj" path="res://Assets/Highlight/orange_cell.png" id="15_gt3je"]
+[ext_resource type="Texture2D" uid="uid://cpqyvdu2pggap" path="res://Assets/outline.png" id="19_pdsj5"]
+[ext_resource type="Script" uid="uid://nc18utsmkig0" path="res://Scripts/input_manager.gd" id="20_hibaj"]
+[ext_resource type="Script" uid="uid://gpoedkki66ef" path="res://Scripts/ui.gd" id="21_pdsj5"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3pmx8"]
+texture = ExtResource("5_wsu2k")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_272bh"]
+texture = ExtResource("6_7mycd")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u50mg"]
+texture = ExtResource("7_k12tt")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cbgmd"]
+texture = ExtResource("8_h1bgf")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1w6v2"]
+texture = ExtResource("9_b3802")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h1bgf"]
+texture = ExtResource("10_k12tt")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ueoa1"]
+texture = ExtResource("10_fevyy")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6vcvc"]
+texture = ExtResource("11_hibaj")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
+texture = ExtResource("3_h2yge")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7k868"]
+texture = ExtResource("13_pdsj5")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hpc6h"]
+texture = ExtResource("14_ee4r6")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kltya"]
+texture = ExtResource("15_gt3je")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_lquwl"]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(111, 64)
+sources/5 = SubResource("TileSetAtlasSource_kltya")
+sources/1 = SubResource("TileSetAtlasSource_272bh")
+sources/2 = SubResource("TileSetAtlasSource_1bvp3")
+sources/0 = SubResource("TileSetAtlasSource_3pmx8")
+sources/3 = SubResource("TileSetAtlasSource_7k868")
+sources/4 = SubResource("TileSetAtlasSource_hpc6h")
+sources/12 = SubResource("TileSetAtlasSource_1w6v2")
+sources/11 = SubResource("TileSetAtlasSource_cbgmd")
+sources/14 = SubResource("TileSetAtlasSource_ueoa1")
+sources/15 = SubResource("TileSetAtlasSource_6vcvc")
+sources/10 = SubResource("TileSetAtlasSource_u50mg")
+sources/13 = SubResource("TileSetAtlasSource_h1bgf")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ee4r6"]
+texture = ExtResource("19_pdsj5")
+texture_region_size = Vector2i(111, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_gt3je"]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(111, 64)
+sources/0 = SubResource("TileSetAtlasSource_ee4r6")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hibaj"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.020524492, 0.31391832, 0.57607067, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pdsj5"]
+bg_color = Color(0.02058172, 0.3238119, 0.59023726, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ee4r6"]
+bg_color = Color(0.055568725, 0.44514942, 0.7972251, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gt3je"]
+bg_color = Color(0.05490196, 0.44705883, 0.79607844, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3pmx8"]
+bg_color = Color(0, 0, 0, 1)
+expand_margin_left = 1.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u50mg"]
+bg_color = Color(0.9098039, 0, 0.13333334, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cbgmd"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(34, 348)
+zoom = Vector2(1.5, 1.5)
+script = ExtResource("4_1bvp3")
+
+[node name="Game" type="Node2D" parent="."]
+script = ExtResource("2_272bh")
+redfox_data = ExtResource("3_fevyy")
+orangefox_data = ExtResource("4_hibaj")
+
+[node name="Board" type="Node2D" parent="Game"]
+script = ExtResource("1_7mycd")
+
+[node name="World" type="TileMapLayer" parent="Game/Board"]
+z_as_relative = false
+tile_map_data = PackedByteArray("AAAAAAAAAAAOAAEAAAAAAAEAAAAMAAEAAAABAAAAAAAMAAEAAAACAAEAAAAMAAEAAAAAAAIAAAAOAAEAAAAAAAMAAAAMAAEAAAABAAIAAAAMAAEAAAABAAMAAAAOAAEAAAACAAIAAAAOAAEAAAACAAMAAAAMAAEAAAAAAAQAAAAOAAEAAAAAAAUAAAAMAAEAAAABAAUAAAAOAAEAAAACAAUAAAAMAAEAAAADAAIAAAAMAAEAAAADAAMAAAAOAAEAAAADAAQAAAAMAAEAAAADAAUAAAAOAAEAAAAEAAAAAAAOAAEAAAAEAAEAAAAMAAEAAAAEAAIAAAAOAAEAAAAEAAQAAAAOAAEAAAAEAAMAAAAMAAEAAAAEAAUAAAAMAAEAAAACAAQAAAAOAAEAAAABAAEAAAAOAAEAAAADAAEAAAAOAAEAAAACAAAAAAAOAAEAAAADAAAAAAAMAAEAAAABAAQAAAAMAAEAAAAGAAAAAAAOAAEAAAAIAAAAAAAOAAEAAAAHAAEAAAAOAAEAAAAFAAEAAAAOAAEAAAAJAAEAAAAOAAEAAAAJAAMAAAAOAAEAAAAHAAMAAAAOAAEAAAAFAAMAAAAOAAEAAAAGAAQAAAAOAAEAAAAIAAQAAAAOAAEAAAAIAAIAAAAOAAEAAAAGAAIAAAAOAAEAAAAFAAUAAAAOAAEAAAAHAAUAAAAOAAEAAAAJAAUAAAAOAAEAAAAFAAAAAAAMAAEAAAAHAAAAAAAMAAEAAAAJAAAAAAAMAAEAAAAJAAIAAAAMAAEAAAAIAAEAAAAMAAEAAAAIAAMAAAAMAAEAAAAHAAIAAAAMAAEAAAAGAAEAAAAMAAEAAAAFAAIAAAAMAAEAAAAGAAMAAAAMAAEAAAAFAAQAAAAMAAEAAAAHAAQAAAAMAAEAAAAGAAUAAAAMAAEAAAAIAAUAAAAMAAEAAAAJAAQAAAAMAAEAAAAAAAYAAAAOAAEAAAAAAAcAAAAMAAEAAAAAAAgAAAAOAAEAAAABAAkAAAAOAAEAAAAAAAkAAAAMAAEAAAACAAcAAAAMAAEAAAABAAYAAAAMAAEAAAABAAcAAAAOAAEAAAABAAgAAAAMAAEAAAACAAYAAAAOAAEAAAACAAgAAAAOAAEAAAACAAkAAAAMAAEAAAADAAYAAAAMAAEAAAADAAcAAAAOAAEAAAADAAgAAAAMAAEAAAADAAkAAAAOAAEAAAAEAAYAAAAOAAEAAAAEAAcAAAAMAAEAAAAEAAgAAAAOAAEAAAAEAAkAAAAMAAEAAAAFAAYAAAAMAAEAAAAFAAcAAAAOAAEAAAAFAAgAAAAMAAEAAAAFAAkAAAAOAAEAAAAGAAYAAAAOAAEAAAAGAAcAAAAMAAEAAAAGAAgAAAAOAAEAAAAGAAkAAAAMAAEAAAAHAAYAAAAMAAEAAAAHAAcAAAAOAAEAAAAHAAgAAAAMAAEAAAAHAAkAAAAOAAEAAAAIAAYAAAAOAAEAAAAIAAcAAAAMAAEAAAAIAAgAAAAOAAEAAAAIAAkAAAAMAAEAAAAJAAYAAAAMAAEAAAAJAAcAAAAOAAEAAAAJAAgAAAAMAAEAAAAJAAkAAAAOAAEAAAA=")
+tile_set = ExtResource("1_ig7tw")
+
+[node name="Highlight" type="TileMapLayer" parent="Game/Board"]
+modulate = Color(1, 1, 1, 0.48235294)
+tile_set = SubResource("TileSet_lquwl")
+
+[node name="Selected" type="TileMapLayer" parent="Game/Board"]
+modulate = Color(1, 1, 1, 0.48235294)
+tile_set = SubResource("TileSet_gt3je")
+
+[node name="InputManager" type="Node" parent="Game"]
+script = ExtResource("20_hibaj")
+
+[node name="UI" type="CanvasLayer" parent="Game"]
+script = ExtResource("21_pdsj5")
+
+[node name="CharacterInfoPanel" type="Panel" parent="Game/UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -140.0
+offset_right = 1910.0
+offset_bottom = -10.0
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Container" type="HBoxContainer" parent="Game/UI/CharacterInfoPanel"]
+layout_direction = 2
+layout_mode = 0
+offset_left = 350.0
+offset_top = 10.0
+offset_right = 475.0
+offset_bottom = 50.0
+theme_override_constants/separation = 18
+
+[node name="Button" type="Button" parent="Game/UI/CharacterInfoPanel/Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_hibaj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pdsj5")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ee4r6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_gt3je")
+text = "ATTACK"
+
+[node name="Button2" type="Button" parent="Game/UI/CharacterInfoPanel/Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "END TURN
+"
+
+[node name="NameLabel" type="Label" parent="Game/UI/CharacterInfoPanel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 210.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 32
+text = "Name"
+
+[node name="HpBar" type="ProgressBar" parent="Game/UI/CharacterInfoPanel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 65.0
+offset_right = 210.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 32
+theme_override_styles/background = SubResource("StyleBoxFlat_3pmx8")
+theme_override_styles/fill = SubResource("StyleBoxFlat_u50mg")
+value = 20.0
+show_percentage = false
+
+[node name="HpLabel" type="Label" parent="Game/UI/CharacterInfoPanel/HpBar"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "20/100"
+horizontal_alignment = 1
+
+[node name="Movements" type="Control" parent="Game/UI/CharacterInfoPanel"]
+anchors_preset = 0
+offset_left = 220.0
+offset_top = 10.0
+offset_right = 330.0
+offset_bottom = 50.0
+
+[node name="Title" type="Label" parent="Game/UI/CharacterInfoPanel/Movements"]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "PM :"
+
+[node name="Value" type="Label" parent="Game/UI/CharacterInfoPanel/Movements"]
+layout_mode = 0
+offset_left = 75.0
+offset_right = 115.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(0.22369102, 0.6305571, 0.39981663, 1)
+theme_override_font_sizes/font_size = 32
+text = "5
+"
+
+[node name="LogPanel" type="Panel" parent="Game/UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 260.0
+offset_bottom = 310.0
+metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Game/UI/LogPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_cbgmd")
+bbcode_enabled = true
+scroll_following = true

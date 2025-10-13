@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="JobData" load_steps=3 format=3 uid="uid://da6hxcjrv2u8s"]
+
+[ext_resource type="Script" uid="uid://pqomod2xytq6" path="res://Scripts/Resources/job_data.gd" id="1_b2wa0"]
+[ext_resource type="PackedScene" uid="uid://cm4jrap5psunh" path="res://Scenes/orange_fox.tscn" id="2_rnqm7"]
+
+[resource]
+script = ExtResource("1_b2wa0")
+job_name = "Orange Fox"
+max_hp = 120
+move_range = 4
+sprite_scene = ExtResource("2_rnqm7")
+attack_range = 1
+attack_damage = 50
+action_points = 5
+attack_cost = 5
+metadata/_custom_type_script = "uid://pqomod2xytq6"
