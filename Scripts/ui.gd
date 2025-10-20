@@ -5,15 +5,16 @@ class_name UI
 @onready var hp_label = $CharacterInfoPanel/HpBar/HpLabel
 @onready var hp_bar = $CharacterInfoPanel/HpBar
 @onready var movements_label = $CharacterInfoPanel/Movements/Value
+@onready var action_points_label = $CharacterInfoPanel/ActionPoints/Value
 @onready var attack_btn = $CharacterInfoPanel/Container/Button
 @onready var end_turn_btn = $CharacterInfoPanel/Container/Button2
+
 @onready var log_panel_text = $LogPanel/RichTextLabel
 
 signal attack_btn_pressed()
 signal end_turn_btn_pressed()
 
 func _ready():
-	print("UI ready")
 	LogManager.log_updated.connect(_on_log_updated)
 	attack_btn.pressed.connect(_on_attack_btn_pressed)
 	end_turn_btn.pressed.connect(_on_end_turn_btn_pressed)
@@ -23,11 +24,9 @@ func _ready():
 # ----------------------
 
 func _on_end_turn_btn_pressed():
-	print("End turn button pressed")
 	emit_signal("end_turn_btn_pressed")
 
 func _on_attack_btn_pressed():
-	print("Attack button pressed")
 	emit_signal("attack_btn_pressed")
 
 func on_turn_started(character: Character):
@@ -44,3 +43,9 @@ func update_character_info(character: Character):
 	hp_label.text = str(character.hp) + "/" + str(character.max_hp)
 	hp_bar.value = character.hp
 	movements_label.text = str(character.movements)
+	action_points_label.text = str(character.action_points)
+	
+	if character.action_points < character.attack_cost:
+		attack_btn.disabled = true
+	else:
+		attack_btn.disabled = false

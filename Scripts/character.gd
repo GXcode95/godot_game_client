@@ -23,7 +23,6 @@ enum Orientation {
 }
 
 var _job_data: JobData
-var _start_cell: Vector2i
 var _movements: int
 var _move_range : int
 var _is_moving: bool = false
@@ -34,10 +33,14 @@ var _max_hp: int
 var _attack_range: int
 var _attack_damage: int
 var _action_points: int
+var _max_action_points: int
 var _attack_cost: int
+var _current_cell: Vector2i
 
 signal animation_changed(new_animation: int)
 signal stopped(orientation: int)
+signal died(character: Character)
+signal moved_to(cell: Vector2i)
 
 # -----------------------
 # -- GETTERS / SETTERS --
@@ -53,10 +56,6 @@ var movements: int:
 var is_moving: bool:
 	get: return _is_moving
 	set(value): _is_moving = value
-
-var start_cell: Vector2i:
-	get: return _start_cell
-	set(value): _start_cell = value
 
 var is_active: bool:
 	get: return _is_active
@@ -96,58 +95,65 @@ var action_points: int:
 var attack_cost: int:
 	get: return _attack_cost
 
+var max_action_points: int:
+	get: return _max_action_points
+	set(value): _max_action_points = value
+
+var current_cell: Vector2i:
+	get: return _current_cell
+	set(value):
+		_current_cell = value
+		emit_signal("moved_to", self, value)
+
 # --------------------
 # -- INITIALIZATION --
 # --------------------
 
-func build(cell: Vector2i, data: JobData):
+func build(start_cell: Vector2i, data: JobData) -> void:
 	_job_data = data
 	move_range = _job_data.move_range
 	max_hp = _job_data.max_hp
 	attack_range = _job_data.attack_range
 	attack_damage = _job_data.attack_damage
-	action_points = _job_data.action_points
+	max_action_points = _job_data.action_points
 	_attack_cost = _job_data.attack_cost
-	print("attack cost: ", attack_cost, " / ",  _job_data.attack_cost)
-	start_cell = cell
+	_current_cell = start_cell
 	hp = max_hp
 	_connect_to_character_view()
 	
-func _connect_to_character_view():
+func _connect_to_character_view() -> void:
 	var character_view = _job_data.sprite_scene.instantiate()
 	add_child(character_view)
 	character_view.connect_to_character(self)
 
-func _ready():
-	if start_cell.y < 3:
+func _ready() -> void:
+	if current_cell.y < 3:
 		orientation = Orientation.DOWN_LEFT
-	elif start_cell.y > 6:
+	elif current_cell.y > 6:
 		orientation = Orientation.UP_RIGHT
 	emit_signal("stopped", orientation)
-	position = world_layer.map_to_local(start_cell)
+	position = world_layer.map_to_local(current_cell)
 
 # ---------------
 # -- MOVEMENTS --
 # ---------------
 
-func move_along_path(path: Array[Vector2i]):
+func move_along_path(path: Array[Vector2i]) -> void:
 	_is_moving = true
 	for cell in path:
 		var target = world_layer.map_to_local(cell)
-		var curr_cell = get_current_cell()
-		
-		if cell == curr_cell:
+		if cell == current_cell:
 			continue
-		elif cell.x > curr_cell.x:
+		elif cell.x > current_cell.x:
 			orientation = Orientation.DOWN_RIGHT
 			emit_signal("animation_changed", AnimationType.WALK_DOWN_RIGHT)
-		elif cell.x < curr_cell.x:
+		elif cell.x < current_cell.x:
 			orientation = Orientation.UP_LEFT
 			emit_signal("animation_changed", AnimationType.WALK_UP_LEFT)
-		elif cell.y > curr_cell.y:
+		elif cell.y > current_cell.y:
 			orientation = Orientation.DOWN_LEFT
 			emit_signal("animation_changed", AnimationType.WALK_DOWN_LEFT)
-		elif cell.y < curr_cell.y:
+		elif cell.y < current_cell.y:
 			orientation = Orientation.UP_RIGHT
 			emit_signal("animation_changed", AnimationType.WALK_UP_RIGHT)
 		
@@ -156,42 +162,47 @@ func move_along_path(path: Array[Vector2i]):
 		movements -= 1
 		ui.update_character_info(self)
 		await tween.finished
-		
+		current_cell = cell
+
 	activate()
 	_is_moving = false
 	
-func can_move_to(cell: Vector2i):
+func can_move_to(cell: Vector2i) -> bool:
 	if is_moving or movements == 0:
 		return false
-		
-	var curr = get_current_cell()
-	return Helpers.distance(curr, cell) <= _movements
+
+	return Helpers.distance(current_cell, cell) <= _movements
 
 # -----------
 # -- STATE --
 # -----------
 
-func get_current_cell() -> Vector2i:
-	return world_layer.local_to_map(global_position)
-
-func reset_movements():
+func reset_movements() -> void:
 	movements = move_range
 	
-func activate():
+func reset_action_points() -> void:
+	action_points = max_action_points
+
+func activate() -> void:
 	_is_active = true
+	
 	match orientation:
 		Orientation.DOWN_LEFT: emit_signal("animation_changed", AnimationType.IDLE_DOWN_LEFT)
 		Orientation.DOWN_RIGHT: emit_signal("animation_changed", AnimationType.IDLE_DOWN_RIGHT)
 		Orientation.UP_LEFT: emit_signal("animation_changed", AnimationType.IDLE_UP_LEFT)
 		Orientation.UP_RIGHT: emit_signal("animation_changed", AnimationType.IDLE_UP_RIGHT)
 
-func deactivate():
+func deactivate() -> void:
 	_is_active = false
 	emit_signal("stopped", orientation)
 
-func die():
+func die() -> void:
 	LogManager.add_entry(job_name + " est mort !")
-	queue_free()
+	emit_signal("died", self)
+
+func reset_state() -> void:
+	reset_movements()
+	reset_action_points()
 
 # ----------------
 # -- ATTACKING --
@@ -200,14 +211,21 @@ func die():
 func can_attack_at(cell: Vector2i) -> bool:
 	if action_points < attack_cost:
 		return false
-	var curr = get_current_cell()
-	return Helpers.distance(curr, cell) == attack_range
+	return Helpers.distance(current_cell, cell) == attack_range
 	
-func attack(target: Character):
+func attack(target: Character) -> void:
 	LogManager.add_entry(job_name + " attaque " + target.job_name)
 	action_points -= attack_cost
+	ui.update_character_info(self)
 	target.take_damage(50)
 
-func take_damage(damage: int):
+func take_damage(damage: int) -> void:
 	LogManager.add_entry(job_name + " subit " + str(damage) + " dégâts")
 	hp -= damage
+
+# -----------
+# -- UTILS --
+# -----------
+
+func class_info() -> String:
+	return "Character: %s" % job_name

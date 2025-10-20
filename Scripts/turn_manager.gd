@@ -30,6 +30,7 @@ var active_index: int:
 # --------------------
 # -- INITIALIZATION --
 # --------------------
+
 func _init(turn_board: Board, character_list: Array[Character]):
 	_board = turn_board
 	_characters = character_list
@@ -46,10 +47,8 @@ func start_turn():
 	active_index = (active_index + 1) % characters.size()
 	active_character = characters[active_index]
 	LogManager.add_entry("Tour de : " + active_character.job_name)
-	active_character.reset_movements()
+	active_character.reset_state()
 	active_character.activate()
-	print("attack cost: ", active_character.attack_cost)
-	
 	emit_signal("turn_started", active_character)
 
 # ----------------------
@@ -81,28 +80,25 @@ func idle_or_end_turn():
 
 func _character_at_cell(cell: Vector2i):
 	for character in characters:
-		if character.get_current_cell() == cell:
+		if character.current_cell == cell:
 			return character
 	return null
-	
+
 func _is_empty_cell(cell: Vector2i):
 	for character in characters:
-		if character.get_current_cell() == cell:
+		if character.current_cell == cell:
 			return false
 	return true
 
 func can_attack_someone():
-	print("action points: ", active_character.action_points)
-	print("attack cost: ", active_character.attack_cost)
 	if active_character.action_points < active_character.attack_cost:
-		print("not enough action points")
 		return false
 
 	for character in characters:
 		if active_character == character:
 			continue
 
-		var distance = Helpers.distance(active_character.get_current_cell(), character.get_current_cell())
+		var distance = Helpers.distance(active_character.current_cell, character.current_cell)
 		if distance <= active_character.attack_range:
 			print("can attack someone at distance: ", distance)
 			return true

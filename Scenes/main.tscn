@@ -267,6 +267,30 @@ theme_override_font_sizes/font_size = 32
 text = "5
 "
 
+[node name="ActionPoints" type="Control" parent="Game/UI/CharacterInfoPanel"]
+anchors_preset = 0
+offset_left = 220.0
+offset_top = 60.0
+offset_right = 330.0
+offset_bottom = 100.0
+
+[node name="Title" type="Label" parent="Game/UI/CharacterInfoPanel/ActionPoints"]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "PA :"
+
+[node name="Value" type="Label" parent="Game/UI/CharacterInfoPanel/ActionPoints"]
+layout_mode = 0
+offset_left = 75.0
+offset_right = 115.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(0.03928836, 0.5353375, 0.99999994, 1)
+theme_override_font_sizes/font_size = 32
+text = "5
+"
+
 [node name="LogPanel" type="Panel" parent="Game/UI"]
 offset_left = 10.0
 offset_top = 10.0
