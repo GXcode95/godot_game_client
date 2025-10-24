@@ -2,20 +2,23 @@ extends Node2D
 class_name Game
 
 const CharacterScene = preload("res://Scenes/character.tscn")
+const GameOverMenuScene = preload("res://Scenes/game_over_menu.tscn")
 const TurnManager = preload("res://Scripts/turn_manager.gd")
 
 @export var redfox_data: JobData
 @export var orangefox_data: JobData
 
-@onready var _input_manager := $InputManager
+@onready var _input_emitter := $InputEmitter
 @onready var board := $Board
 @onready var ui := $UI
 
+const MODE := Enums.MODE
+
+var _players: Array[Player] = []
 var _turn_manager: TurnManager
 var _characters : Array[Character] = []
 var _selected_character : Character
-var _mode : String = "idle"
-
+var _mode := MODE.IDLE
 # -----------------------
 # -- GETTERS / SETTERS --
 # -----------------------
@@ -35,70 +38,84 @@ var mode:
 	set(value):
 		_mode = value
 		match _mode:
-			'attack':
+			MODE.ATTACK:
 				attack_mode()
-			'moving':
+			MODE.MOVING:
 				moving_mode()
-			'idle':
+			MODE.IDLE:
 				idle_mode()
 
+var players:
+	get: return _players
 # --------------------
 # -- INITIALIZATION --
 # --------------------
 
 func _ready():
-	_input_manager.left_click.connect(_on_left_click)
-	_input_manager.mouse_over.connect(_on_mouseover)
-	_input_manager.mode_updated.connect(_on_mode_updated)
-	_input_manager.end_turn.connect(_on_turn_ended)
-	_input_manager.right_click.connect(_on_right_click)
-		
-	_spawn_character(Vector2i(5, 9), redfox_data)
-	_spawn_character(Vector2i(5, 0), orangefox_data)
+	_input_emitter.left_click.connect(_on_left_click)
+	_input_emitter.mouse_over.connect(_on_mouseover)
+	_input_emitter.mode_updated.connect(_on_mode_updated)
+	_input_emitter.right_click.connect(_on_right_click)
+
+	_spawn_players()
 
 	_turn_manager = TurnManager.new(board, characters)
 	add_child(turn_manager)
-	turn_manager.turn_started.connect(_on_turn_started)
-	turn_manager.turn_ended.connect(_on_turn_ended)
 	turn_manager.mode_updated.connect(_on_mode_updated)
 	turn_manager.start_turn()
 
-func _spawn_character(cell: Vector2i, job_data: JobData):
+func _spawn_players():
+	_players.append(Player.new("Player 1"))
+	_players.append(Player.new("Player 2"))
+	
+	var redfox = _spawn_character(Vector2i(5, 9), redfox_data, players[0])
+	var orangefox = _spawn_character(Vector2i(5, 0), orangefox_data, players[1])
+	players[0].add_character(redfox)
+	players[1].add_character(orangefox)
+
+func _spawn_character(cell: Vector2i, job_data: JobData, player: Player) -> Character:
 	var character = CharacterScene.instantiate()
-	character.build(cell, job_data)
+
+	character.build(cell, job_data, player)
 	characters.append(character)
 	add_child(character)
 	board.add_entity(character, cell)
 	character.died.connect(_on_character_died)
+	return character
 
 # --------------------
 # -- SIGNALS --
 # --------------------
 
-func _on_left_click(cell: Vector2i):
+func _on_left_click():
+	var cell = board.get_mouse_cell()
+	if not cell or not board.is_inside(cell):
+		return
+
 	board.selected_cell = cell
 	match mode:
-		'attack': 
+		MODE.ATTACK: 
 			turn_manager.handle_attack(cell)
-		'idle':
+		MODE.IDLE:
 			turn_manager.handle_move(cell)
-		'moving':
+		MODE.MOVING:
 			pass
 
 func _on_right_click():
-	mode = 'idle'
+	mode = MODE.IDLE
 
-func _on_mouseover(cell: Vector2i):
-	if board.hovered_cell == cell:
+func _on_mouseover():
+	var cell = board.get_mouse_cell()
+	if not cell or not board.is_inside(cell) or board.hovered_cell == cell:
 		return
 		
 	#print("mouseover -> ", cell)
 	board.hovered_cell = cell
 
 	match mode:	
-		'moving':
+		MODE.MOVING:
 			pass
-		'idle':
+		MODE.IDLE:
 			var active_character = turn_manager.active_character
 			var active_character_cell = active_character.current_cell
 			var movements = active_character.movements
@@ -107,26 +124,11 @@ func _on_mouseover(cell: Vector2i):
 			else:
 				board.reset_and_clear_travel_path()
 				board.hovered_cell = cell
-		'attack':
+		MODE.ATTACK:
 			pass
 
-func _on_mode_updated(new_mode: String):
+func _on_mode_updated(new_mode: int):
 	mode = new_mode
-
-func _on_turn_started(character: Character):
-	board.print_present_entities()
-	print(turn_manager.active_character.current_cell)
-	
-	mode = 'idle'
-	ui.update_character_info(character)
-	board.display_move_range(character.movements, character.current_cell)
-	if character.can_move_to(board.hovered_cell):
-		board.display_path_between(character.current_cell, board.hovered_cell, character.movements)
-
-func _on_turn_ended():
-	board.clear_highlight()
-	board.reset_turn_data()
-	turn_manager.start_turn()
 
 func _on_character_died(character: Character):
 	characters.erase(character)
@@ -139,16 +141,23 @@ func _on_character_died(character: Character):
 # --------------------
 
 func idle_mode():
+	var character = turn_manager.active_character
 	board.reset_travel_path()
-	board.display_move_range(turn_manager.active_character.movements, turn_manager.active_character.current_cell)
+	board.display_move_range(character.movements, character.current_cell)
+	if character.can_move_to(board.hovered_cell):
+		board.display_path_between(character.current_cell, board.hovered_cell, character.movements)
 
 func moving_mode():
 	board.clear_highlight()
 
 func attack_mode():
+	if turn_manager.active_character.attack_cost > turn_manager.active_character.action_points:
+		return
 	board.display_attack_range(turn_manager.active_character.attack_range, turn_manager.active_character.current_cell)
 
+# ---------------
+# -- GAME OVER --
+# ---------------
+
 func game_over():
-	var msg = "===========================\n======== GAME OVER ========\n==========================="
-	LogManager.add_entry(msg)
-	print(msg)
+	get_tree().change_scene_to_packed(GameOverMenuScene)

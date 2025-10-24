@@ -6,10 +6,10 @@
 [resource]
 script = ExtResource("1_n815c")
 job_name = "Red Fox"
-max_hp = 100
+max_hp = 10
 move_range = 5
 sprite_scene = ExtResource("2_d7uiw")
-attack_range = 1
+attack_range = 10
 attack_damage = 50
 action_points = 5
 attack_cost = 5

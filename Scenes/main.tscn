@@ -19,7 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://b76j3j0munxiu" path="res://Assets/Highlight/purple_cell.png" id="14_ee4r6"]
 [ext_resource type="Texture2D" uid="uid://c88r6ihqlb1gj" path="res://Assets/Highlight/orange_cell.png" id="15_gt3je"]
 [ext_resource type="Texture2D" uid="uid://cpqyvdu2pggap" path="res://Assets/outline.png" id="19_pdsj5"]
-[ext_resource type="Script" uid="uid://nc18utsmkig0" path="res://Scripts/input_manager.gd" id="20_hibaj"]
+[ext_resource type="Script" uid="uid://nc18utsmkig0" path="res://Scripts/input_emitter.gd" id="20_pdsj5"]
 [ext_resource type="Script" uid="uid://gpoedkki66ef" path="res://Scripts/ui.gd" id="21_pdsj5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3pmx8"]
@@ -173,8 +173,8 @@ tile_set = SubResource("TileSet_lquwl")
 modulate = Color(1, 1, 1, 0.48235294)
 tile_set = SubResource("TileSet_gt3je")
 
-[node name="InputManager" type="Node" parent="Game"]
-script = ExtResource("20_hibaj")
+[node name="InputEmitter" type="Node" parent="Game"]
+script = ExtResource("20_pdsj5")
 
 [node name="UI" type="CanvasLayer" parent="Game"]
 script = ExtResource("21_pdsj5")

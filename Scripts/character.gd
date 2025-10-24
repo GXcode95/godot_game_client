@@ -4,23 +4,8 @@ class_name Character
 @onready var world_layer := $"../Board/World"
 @onready var ui := $"../UI"
 
-enum AnimationType {
-	IDLE_UP_LEFT,
-	IDLE_UP_RIGHT,
-	IDLE_DOWN_RIGHT,
-	IDLE_DOWN_LEFT,
-	WALK_UP_LEFT,
-	WALK_UP_RIGHT,
-	WALK_DOWN_RIGHT,
-	WALK_DOWN_LEFT,
-}
-
-enum Orientation {
-	UP_LEFT,
-	UP_RIGHT,
-	DOWN_RIGHT,
-	DOWN_LEFT,
-}
+const ANIMATION_TYPE := Enums.ANIMATION_TYPE
+const ORIENTATION := Enums.ORIENTATION
 
 var _job_data: JobData
 var _movements: int
@@ -36,6 +21,7 @@ var _action_points: int
 var _max_action_points: int
 var _attack_cost: int
 var _current_cell: Vector2i
+var _player: Player
 
 signal animation_changed(new_animation: int)
 signal stopped(orientation: int)
@@ -63,7 +49,7 @@ var is_active: bool:
 
 var orientation: int:
 	get: return _orientation
-	set(value): _orientation = value if value in [Orientation.DOWN_LEFT, Orientation.DOWN_RIGHT, Orientation.UP_LEFT, Orientation.UP_RIGHT] else Orientation.DOWN_LEFT
+	set(value): _orientation = value if value in [ORIENTATION.DOWN_LEFT, ORIENTATION.DOWN_RIGHT, ORIENTATION.UP_LEFT, ORIENTATION.UP_RIGHT] else ORIENTATION.DOWN_LEFT
 
 var hp: int:
 	get: return _hp
@@ -105,11 +91,14 @@ var current_cell: Vector2i:
 		_current_cell = value
 		emit_signal("moved_to", self, value)
 
+var player: Player:
+	get: return _player
+
 # --------------------
 # -- INITIALIZATION --
 # --------------------
 
-func build(start_cell: Vector2i, data: JobData) -> void:
+func build(start_cell: Vector2i, data: JobData, c_player: Player) -> void:
 	_job_data = data
 	move_range = _job_data.move_range
 	max_hp = _job_data.max_hp
@@ -119,6 +108,7 @@ func build(start_cell: Vector2i, data: JobData) -> void:
 	_attack_cost = _job_data.attack_cost
 	_current_cell = start_cell
 	hp = max_hp
+	_player = c_player
 	_connect_to_character_view()
 	
 func _connect_to_character_view() -> void:
@@ -128,9 +118,9 @@ func _connect_to_character_view() -> void:
 
 func _ready() -> void:
 	if current_cell.y < 3:
-		orientation = Orientation.DOWN_LEFT
+		orientation = ORIENTATION.DOWN_LEFT
 	elif current_cell.y > 6:
-		orientation = Orientation.UP_RIGHT
+		orientation = ORIENTATION.UP_RIGHT
 	emit_signal("stopped", orientation)
 	position = world_layer.map_to_local(current_cell)
 
@@ -145,17 +135,17 @@ func move_along_path(path: Array[Vector2i]) -> void:
 		if cell == current_cell:
 			continue
 		elif cell.x > current_cell.x:
-			orientation = Orientation.DOWN_RIGHT
-			emit_signal("animation_changed", AnimationType.WALK_DOWN_RIGHT)
+			orientation = ORIENTATION.DOWN_RIGHT
+			emit_signal("animation_changed", ANIMATION_TYPE.WALK_DOWN_RIGHT)
 		elif cell.x < current_cell.x:
-			orientation = Orientation.UP_LEFT
-			emit_signal("animation_changed", AnimationType.WALK_UP_LEFT)
+			orientation = ORIENTATION.UP_LEFT
+			emit_signal("animation_changed", ANIMATION_TYPE.WALK_UP_LEFT)
 		elif cell.y > current_cell.y:
-			orientation = Orientation.DOWN_LEFT
-			emit_signal("animation_changed", AnimationType.WALK_DOWN_LEFT)
+			orientation = ORIENTATION.DOWN_LEFT
+			emit_signal("animation_changed", ANIMATION_TYPE.WALK_DOWN_LEFT)
 		elif cell.y < current_cell.y:
-			orientation = Orientation.UP_RIGHT
-			emit_signal("animation_changed", AnimationType.WALK_UP_RIGHT)
+			orientation = ORIENTATION.UP_RIGHT
+			emit_signal("animation_changed", ANIMATION_TYPE.WALK_UP_RIGHT)
 		
 		var tween = get_tree().create_tween()
 		tween.tween_property(self, "position", target, 0.3)
@@ -187,10 +177,10 @@ func activate() -> void:
 	_is_active = true
 	
 	match orientation:
-		Orientation.DOWN_LEFT: emit_signal("animation_changed", AnimationType.IDLE_DOWN_LEFT)
-		Orientation.DOWN_RIGHT: emit_signal("animation_changed", AnimationType.IDLE_DOWN_RIGHT)
-		Orientation.UP_LEFT: emit_signal("animation_changed", AnimationType.IDLE_UP_LEFT)
-		Orientation.UP_RIGHT: emit_signal("animation_changed", AnimationType.IDLE_UP_RIGHT)
+		ORIENTATION.DOWN_LEFT: emit_signal("animation_changed", ANIMATION_TYPE.IDLE_DOWN_LEFT)
+		ORIENTATION.DOWN_RIGHT: emit_signal("animation_changed", ANIMATION_TYPE.IDLE_DOWN_RIGHT)
+		ORIENTATION.UP_LEFT: emit_signal("animation_changed", ANIMATION_TYPE.IDLE_UP_LEFT)
+		ORIENTATION.UP_RIGHT: emit_signal("animation_changed", ANIMATION_TYPE.IDLE_UP_RIGHT)
 
 func deactivate() -> void:
 	_is_active = false

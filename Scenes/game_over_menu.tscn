@@ -1,0 +1,101 @@
+[gd_scene load_steps=6 format=3 uid="uid://dk4hpoquw5qwv"]
+
+[ext_resource type="Shader" uid="uid://cwkoiq1tje5s3" path="res://Shaders/gradient.gdshader" id="1_arass"]
+[ext_resource type="Script" uid="uid://ww1jcsqv6ev5" path="res://Scripts/game_over_menu.gd" id="1_i22rp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i22rp"]
+shader = ExtResource("1_arass")
+shader_parameter/orange = Color(1, 0.6, 0, 1)
+shader_parameter/green = Color(0.2, 0.8, 0.4, 1)
+shader_parameter/cyan = Color(0.2, 0.8, 0.85, 1)
+shader_parameter/purple = Color(0.8, 0.2, 0.8, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dsdey"]
+content_margin_left = 100.0
+content_margin_top = 40.0
+content_margin_right = 100.0
+content_margin_bottom = 40.0
+bg_color = Color(0, 0.3019608, 0.44705883, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+shadow_size = 2
+shadow_offset = Vector2(10, 10)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqaa1"]
+content_margin_left = 100.0
+content_margin_top = 40.0
+content_margin_right = 100.0
+content_margin_bottom = 40.0
+bg_color = Color(0.24742699, 0.7261223, 0.9999998, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+shadow_size = 2
+shadow_offset = Vector2(10, 10)
+
+[node name="GameOverMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i22rp")
+metadata/_edit_group_ = true
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_i22rp")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1.8722862e-05, 0.5999395, 0.395926, 1)
+
+[node name="Label" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -356.5
+offset_bottom = -243.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 82
+text = "MACHIN WIN !"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -325.5
+offset_top = -81.5
+offset_right = 325.5
+offset_bottom = 81.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="MainMenuButton" type="Button" parent="Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxFlat_dsdey")
+theme_override_styles/hover = SubResource("StyleBoxFlat_eqaa1")
+text = "Menu"
+
+[node name="QuitButton" type="Button" parent="Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxFlat_dsdey")
+theme_override_styles/hover = SubResource("StyleBoxFlat_eqaa1")
+text = "Quit
+"

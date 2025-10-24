@@ -1,26 +1,29 @@
 extends Node2D
 class_name CharacterView
 
+const ANIMATION_TYPE := Enums.ANIMATION_TYPE
+const ORIENTATION := Enums.ORIENTATION
+
 @onready var _animation_player: AnimationPlayer = $CharacterAnimationPlayer
 @onready var _animation_sprites := {
-	Character.AnimationType.IDLE_UP_LEFT: $IdleUpLeft,
-	Character.AnimationType.IDLE_UP_RIGHT: $IdleUpRight,
-	Character.AnimationType.IDLE_DOWN_RIGHT: $IdleDownRight,
-	Character.AnimationType.IDLE_DOWN_LEFT: $IdleDownLeft,
-	Character.AnimationType.WALK_UP_LEFT: $WalkUpLeft,
-	Character.AnimationType.WALK_UP_RIGHT: $WalkUpRight,
-	Character.AnimationType.WALK_DOWN_RIGHT: $WalkDownRight,
-	Character.AnimationType.WALK_DOWN_LEFT: $WalkDownLeft,
+	ANIMATION_TYPE.IDLE_UP_LEFT: $IdleUpLeft,
+	ANIMATION_TYPE.IDLE_UP_RIGHT: $IdleUpRight,
+	ANIMATION_TYPE.IDLE_DOWN_RIGHT: $IdleDownRight,
+	ANIMATION_TYPE.IDLE_DOWN_LEFT: $IdleDownLeft,
+	ANIMATION_TYPE.WALK_UP_LEFT: $WalkUpLeft,
+	ANIMATION_TYPE.WALK_UP_RIGHT: $WalkUpRight,
+	ANIMATION_TYPE.WALK_DOWN_RIGHT: $WalkDownRight,
+	ANIMATION_TYPE.WALK_DOWN_LEFT: $WalkDownLeft,
 }
 @onready var _animation_names := {
-	Character.AnimationType.IDLE_UP_LEFT: "idle_up_left",
-	Character.AnimationType.IDLE_UP_RIGHT: "idle_up_right",
-	Character.AnimationType.IDLE_DOWN_RIGHT: "idle_down_right",
-	Character.AnimationType.IDLE_DOWN_LEFT: "idle_down_left",
-	Character.AnimationType.WALK_UP_LEFT: "walk_up_left",
-	Character.AnimationType.WALK_UP_RIGHT: "walk_up_right",
-	Character.AnimationType.WALK_DOWN_RIGHT: "walk_down_right",
-	Character.AnimationType.WALK_DOWN_LEFT: "walk_down_left",
+	ANIMATION_TYPE.IDLE_UP_LEFT: "idle_up_left",
+	ANIMATION_TYPE.IDLE_UP_RIGHT: "idle_up_right",
+	ANIMATION_TYPE.IDLE_DOWN_RIGHT: "idle_down_right",
+	ANIMATION_TYPE.IDLE_DOWN_LEFT: "idle_down_left",
+	ANIMATION_TYPE.WALK_UP_LEFT: "walk_up_left",
+	ANIMATION_TYPE.WALK_UP_RIGHT: "walk_up_right",
+	ANIMATION_TYPE.WALK_DOWN_RIGHT: "walk_down_right",
+	ANIMATION_TYPE.WALK_DOWN_LEFT: "walk_down_left",
 }
 
 # --------------------
@@ -53,7 +56,7 @@ func _stop_and_idle(orientation: int):
 	_hide_all_sprites()
 
 	match orientation:
-		Character.Orientation.DOWN_LEFT: _animation_sprites[Character.AnimationType.IDLE_DOWN_LEFT].visible = true
-		Character.Orientation.DOWN_RIGHT: _animation_sprites[Character.AnimationType.IDLE_DOWN_RIGHT].visible = true
-		Character.Orientation.UP_LEFT: _animation_sprites[Character.AnimationType.IDLE_UP_LEFT].visible = true
-		Character.Orientation.UP_RIGHT: _animation_sprites[Character.AnimationType.IDLE_UP_RIGHT].visible = true
+		ORIENTATION.DOWN_LEFT: _animation_sprites[ANIMATION_TYPE.IDLE_DOWN_LEFT].visible = true
+		ORIENTATION.DOWN_RIGHT: _animation_sprites[ANIMATION_TYPE.IDLE_DOWN_RIGHT].visible = true
+		ORIENTATION.UP_LEFT: _animation_sprites[ANIMATION_TYPE.IDLE_UP_LEFT].visible = true
+		ORIENTATION.UP_RIGHT: _animation_sprites[ANIMATION_TYPE.IDLE_UP_RIGHT].visible = true
