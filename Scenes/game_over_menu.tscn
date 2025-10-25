@@ -56,20 +56,6 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1.8722862e-05, 0.5999395, 0.395926, 1)
 
-[node name="Label" type="Label" parent="Background"]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -356.5
-offset_bottom = -243.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 82
-text = "MACHIN WIN !"
-horizontal_alignment = 1
-
 [node name="Buttons" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -99,3 +85,17 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_dsdey")
 theme_override_styles/hover = SubResource("StyleBoxFlat_eqaa1")
 text = "Quit
 "
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -356.5
+offset_bottom = -243.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 82
+text = "MACHIN WIN !"
+horizontal_alignment = 1

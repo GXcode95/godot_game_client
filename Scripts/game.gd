@@ -1,8 +1,8 @@
 extends Node2D
 class_name Game
 
-const CharacterScene = preload("res://Scenes/character.tscn")
-const GameOverMenuScene = preload("res://Scenes/game_over_menu.tscn")
+const CharacterScene = preload(Scenes.PATH.CHARACTER)
+const GameOverMenuScene = preload(Scenes.PATH.GAME_OVER)
 const TurnManager = preload("res://Scripts/turn_manager.gd")
 
 @export var redfox_data: JobData

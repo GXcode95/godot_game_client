@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 LogManager="*res://Scripts/log_manager.gd"
+AuthManager="*res://Scripts/Api/auth_manager.gd"
 
 [display]
 
