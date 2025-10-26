@@ -9,6 +9,7 @@ var lobby_id: int
 signal lobby_received(lobby: Dictionary)
 signal connected
 signal disconnected
+signal lobby_playing
 
 func connect_to_lobby(lobby_id_: int) -> void:
 	lobby_id = lobby_id_
@@ -42,11 +43,15 @@ func _on_data() -> void:
 		if parsed.has("type"):
 			_handle_action_cable_type(parsed)
 		elif parsed.has("identifier") and parsed.has("message"):
-			var lobby = parsed["message"].get("lobby", null)
-			if lobby:
-				emit_signal("lobby_received", lobby)
-			else:
-				print("No lobby in message: ", parsed["message"])
+			match parsed["message"].get("event", ""):
+				"playing":
+					emit_signal("lobby_playing")
+				"updated":
+					var lobby_str = parsed["message"].get("lobby")
+					print("=================== updated: ", lobby_str)
+					var lobby = ApiHelper._fix_numbers(JSON.parse_string(lobby_str))
+					emit_signal("lobby_received", lobby)
+					
 
 func _handle_action_cable_type(parsed: Dictionary) -> void:
 	var type = parsed.get("type", "")

@@ -19,6 +19,8 @@ var _turn_manager: TurnManager
 var _characters : Array[Character] = []
 var _selected_character : Character
 var _mode := MODE.IDLE
+
+
 # -----------------------
 # -- GETTERS / SETTERS --
 # -----------------------
@@ -47,31 +49,36 @@ var mode:
 
 var players:
 	get: return _players
+
+
 # --------------------
 # -- INITIALIZATION --
 # --------------------
 
 func _ready():
-	_input_emitter.left_click.connect(_on_left_click)
-	_input_emitter.mouse_over.connect(_on_mouseover)
-	_input_emitter.mode_updated.connect(_on_mode_updated)
-	_input_emitter.right_click.connect(_on_right_click)
-
-	_spawn_players()
-
-	_turn_manager = TurnManager.new(board, characters)
-	add_child(turn_manager)
-	turn_manager.mode_updated.connect(_on_mode_updated)
-	turn_manager.start_turn()
-
-func _spawn_players():
-	_players.append(Player.new("Player 1"))
-	_players.append(Player.new("Player 2"))
+	NetworkClient.connect_to_server()
+	NetworkClient.server_pong.connect(_on_server_pong)
+	ApiManager.get_lobby(AuthManager.user["lobby_id"])
+	ApiManager.lobby_received.connect(_on_lobby_received)
+	
+func _on_lobby_received(lobby: Dictionary) -> void:
+	_players.append(Player.new(lobby.get("host", {}).get("nickname", "Player 1"), lobby.get("host", {}).get("id", 0)))
+	_players.append(Player.new(lobby.get("guest", {}).get("nickname", "Player 2"), lobby.get("guest", {}).get("id", 0)))
 	
 	var redfox = _spawn_character(Vector2i(5, 9), redfox_data, players[0])
 	var orangefox = _spawn_character(Vector2i(5, 0), orangefox_data, players[1])
 	players[0].add_character(redfox)
 	players[1].add_character(orangefox)
+	
+	_turn_manager = TurnManager.new(board, characters)
+	add_child(turn_manager)
+	turn_manager.mode_updated.connect(_on_mode_updated)
+	_input_emitter.left_click.connect(_on_left_click)
+	_input_emitter.mouse_over.connect(_on_mouseover)
+	_input_emitter.mode_updated.connect(_on_mode_updated)
+	_input_emitter.right_click.connect(_on_right_click)
+	turn_manager.start_turn()
+	
 
 func _spawn_character(cell: Vector2i, job_data: JobData, player: Player) -> Character:
 	var character = CharacterScene.instantiate()
@@ -88,6 +95,7 @@ func _spawn_character(cell: Vector2i, job_data: JobData, player: Player) -> Char
 # --------------------
 
 func _on_left_click():
+	NetworkClient.send_message({"action": "ping"})
 	var cell = board.get_mouse_cell()
 	if not cell or not board.is_inside(cell):
 		return
@@ -135,6 +143,9 @@ func _on_character_died(character: Character):
 	character.queue_free()
 	if characters.size() <= 1:
 		game_over()
+
+func _on_server_pong(data: Dictionary):
+	print("Server pong: ", data)
 
 # --------------------
 # -- MODES HANDLERS --

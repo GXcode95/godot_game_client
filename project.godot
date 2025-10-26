@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 LogManager="*res://Scripts/log_manager.gd"
 AuthManager="*res://Scripts/Api/auth_manager.gd"
 ApiManager="*res://Scripts/Api/api_manager.gd"
+NetworkClient="*res://Scripts/Api/network_client.gd"
 
 [display]
 

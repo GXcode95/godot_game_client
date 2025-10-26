@@ -12,7 +12,7 @@ signal lobby_joined()
 # -- LOBBIES REQUESTS --
 # -----------------------
 
-# -- GET LOBBIES [INDEX] --
+# -- INDEX LOBBY --
 func get_lobbies() -> void:
 	var http := HTTPRequest.new()
 	add_child(http)
@@ -32,7 +32,7 @@ func _on_get_lobbies_response(result, response_code, _headers, body):
 	else:
 		_build_and_push_error(data, response_code, "Failed to get lobbies")
 
-# -- GET LOBBY [SHOW] --
+# -- SHOW LOBBY --
 func get_lobby(lobby_id: int) -> void:
 	var http := HTTPRequest.new()
 	add_child(http)
@@ -44,7 +44,7 @@ func get_lobby(lobby_id: int) -> void:
 	http.request(BASE_URL + "/lobbies/" + str(lobby_id), headers, HTTPClient.METHOD_GET)
 	http.request_completed.connect(_on_get_lobby_response)
 
-func _on_get_lobby_response(result, response_code, _headers, body):
+func _on_get_lobby_response(result : int, response_code : int, _headers, body : PackedByteArray):
 	var sucess = result == OK and response_code == 200
 	var data = ApiHelper.parse_body(body)
 	if sucess:
@@ -55,7 +55,7 @@ func _on_get_lobby_response(result, response_code, _headers, body):
 	else:
 		_build_and_push_error(data, response_code, "Failed to get lobby")
 
-# -- CREATE LOBBY [CREATE] --
+# -- CREATE LOBBY --
 func create_lobby() -> void:
 	var http := HTTPRequest.new()
 	add_child(http)
@@ -77,7 +77,7 @@ func create_lobby() -> void:
 	)
 	http.request_completed.connect(_on_create_lobby_response)
 
-func _on_create_lobby_response(result, response_code, _headers, body):
+func _on_create_lobby_response(result : int, response_code : int, _headers, body : PackedByteArray):
 	var sucess = result == OK and response_code == 201
 	var data = ApiHelper.parse_body(body)
 	if sucess:
@@ -86,8 +86,26 @@ func _on_create_lobby_response(result, response_code, _headers, body):
 	else:
 		_build_and_push_error(data, response_code, "Failed to create lobby")
 		
-# -- JOIN LOBBY [UPDATE] --
+# -- UPDATE LOBBY --
 func join_lobby(lobby_id: int) -> void:
+	var body = {
+		"lobby": {
+			"guest_id": AuthManager.user["id"]
+		}
+	}
+	var http := _update_lobby(lobby_id, body)
+	http.request_completed.connect(_on_join_lobby_response)
+	
+func play_lobby(lobby_id: int) -> void:
+	var body = {
+		"lobby": {
+			"status": "playing"
+		}
+	}
+	var http := _update_lobby(lobby_id, body)
+	http.request_completed.connect(_on_play_lobby_response)
+
+func _update_lobby(lobby_id: int, body: Dictionary) -> HTTPRequest:
 	var http := HTTPRequest.new()
 	add_child(http)
 	var token = AuthManager.bearer_token
@@ -95,20 +113,15 @@ func join_lobby(lobby_id: int) -> void:
 		"Content-Type: application/json",
 		"Authorization: %s" % token
 	]
-	var body = {
-		"lobby": {
-			"guest_id": AuthManager.user["id"]
-		}
-	}
 	http.request(
 		BASE_URL + "/lobbies/" + str(lobby_id),
 		headers,
 		HTTPClient.METHOD_PATCH,
 		JSON.stringify(body)
 	)
-	http.request_completed.connect(_on_join_lobby_response)
-	
-func _on_join_lobby_response(result, response_code, _headers, body):
+	return http
+
+func _on_join_lobby_response(result : int, response_code : int, _headers, body : PackedByteArray):
 	var sucess = result == OK and response_code == 200
 	var data = ApiHelper.parse_body(body)
 	if sucess:
@@ -116,6 +129,13 @@ func _on_join_lobby_response(result, response_code, _headers, body):
 		emit_signal("lobby_joined")
 	else:
 		_build_and_push_error(data, response_code, "Failed to join lobby")
+
+func _on_play_lobby_response(result : int, response_code : int, _headers, body : PackedByteArray):
+	var sucess = result == OK and response_code == 200
+	var data = ApiHelper.parse_body(body)
+	if sucess:
+		return
+	_build_and_push_error(data, response_code, "Failed to play lobby")
 
 # -------------
 # -- HELPERS --
