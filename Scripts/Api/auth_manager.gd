@@ -1,3 +1,4 @@
+# Autoloaded
 extends Node
 
 const BASE_URL := "http://localhost:3000/api/v1"
@@ -14,6 +15,9 @@ var _user := {}
 
 var user:
 	get: return _user
+
+var bearer_token:
+	get: return _bearer_token
 
 signal logged_in(bearer_token: String)
 
@@ -43,18 +47,18 @@ func login(email: String, password: String) -> void:
 # -----------------------
 
 func _on_login_response(result, response_code, headers, body):
-	var d_headers = _headers_to_dict(headers)
+	var d_headers = ApiHelper._headers_to_dict(headers)
 	var	sucess = result == OK and (response_code == 200 || response_code == 201)
 	if sucess:
 		_bearer_token = d_headers["authorization"]
-		_user = _parse_body(body).get("user", {})
+		_user = ApiHelper.parse_body(body).get("user", {})
 		connected = true
 	else:
 		push_error("Login failed: ", result, response_code, headers, body)
 
-# -------------
-# -- HELPERS --
-# -------------
+# -----------
+# -- UTILS --
+# -----------
 
 func _send_request(path: String, method: int, body: Dictionary = {}) -> HTTPRequest:
 	var http := HTTPRequest.new()
@@ -67,24 +71,3 @@ func _send_request(path: String, method: int, body: Dictionary = {}) -> HTTPRequ
 	var json_body = JSON.stringify(body)
 	http.request(BASE_URL + path, headers, method, json_body)
 	return http
-
-func _headers_to_dict(headers: Array) -> Dictionary:
-	var result := {}
-	for header in headers:
-			var parts = header.split(":", false, 2) # false = keep empty parts, 2 = maxsplit
-			if parts.size() == 2:
-					var key = parts[0].strip_edges().to_lower()
-					var value = parts[1].strip_edges()
-					result[key] = value
-	return result
-
-
-func _parse_body(body: String) -> Dictionary:
-	var json = JSON.new()
-	var parse_result = json.parse(body)
-	if parse_result == OK:
-		return json.get_data()
-	push_error("Failed to parse body: ")
-	print(parse_result)
-	print(body)
-	return {}

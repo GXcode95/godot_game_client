@@ -19,12 +19,17 @@ config/icon="res://icon.svg"
 
 LogManager="*res://Scripts/log_manager.gd"
 AuthManager="*res://Scripts/Api/auth_manager.gd"
+ApiManager="*res://Scripts/Api/api_manager.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/stretch/mode="viewport"
+
+[dotnet]
+
+project/assembly_name="isotile"
 
 [input]
 
